@@ -46,9 +46,6 @@ SECTIONS
     . = ALIGN(4);
   } 
 
-  . = . + 0x4000; 
-  __stack_start = .;
-
   .dynamic : { *(.dynamic) } 
   .dynsym : { *(.dynsym) } 
   .dynstr : { *(.dynstr) } 
@@ -57,6 +54,9 @@ SECTIONS
   .got.plt : { *(.got.plt) } 
   .interp : { *(.interp) } 
   .hash : { *(.hash) } 
+
+  . = . + 0x4000;
+  __stack_start = .;
 
   /DISCARD/ :
   {
