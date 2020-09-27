@@ -2,7 +2,7 @@
   .global _reset
 
 _reset:
-	B handler_reset
+	BL handler_reset
 	B handler_undefined 
 	B handler_software_interrupt 
 	B handler_prefetch_abort 
@@ -13,6 +13,7 @@ _reset:
 
 handler_reset:
 	mov r0, lr
+	sub r0, #4
 	ldr r1, stack_start
 	mov sp, r1
 	bl low_init

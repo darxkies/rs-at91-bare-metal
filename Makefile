@@ -1,5 +1,6 @@
 compile:
 	cargo build
+	arm-none-eabi-objcopy target/armv5te-unknown-linux-gnueabi/debug/rs-at91-bare-metal -O binary code.bin
 
 size: compile
 	arm-none-eabi-size -A target/armv5te-unknown-linux-gnueabi/debug/rs-at91-bare-metal 

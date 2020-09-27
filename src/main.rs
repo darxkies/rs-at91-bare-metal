@@ -8,6 +8,7 @@ use core::{
     mem::zeroed,
     panic::PanicInfo,
     ptr::{read, write_volatile},
+	fmt::{Write, Result},
 };
 
 const UART0: u32 = 0x0101F1000;
@@ -19,14 +20,30 @@ fn panic(_info: &PanicInfo) -> ! {
 	}
 }
 
-fn uart_print(value: &str) {
-	let address = UART0 as *mut u8;
+struct UART;
 
-	for byte in value.as_bytes() {
-		unsafe {
-            write_volatile(address, read(byte));
+impl Write for UART {
+	fn write_str(&mut self, value: &str) -> Result {
+		let address = UART0 as *mut u8;
+
+		for byte in value.as_bytes() {
+			unsafe {
+				write_volatile(address, read(byte));
+			}
 		}
+
+		Ok(())
 	}
+}
+
+static mut UART_INSTANCE: UART = UART{};
+
+macro_rules! printk {
+    ($($arg:tt)*) => { 
+		unsafe {
+			write!(UART_INSTANCE, $($arg)*).expect("failed");
+		}
+	};
 }
 
 #[no_mangle]
@@ -47,14 +64,16 @@ pub fn low_init(_start: u32) -> ! {
         }
     }
 
+	printk!("\nPC: {:#X}\n", _start);
+
     main()
 }
 
 fn main() -> ! {
-	uart_print("\n********************************************************\n");
-	uart_print("Hello over there!\n");
-	uart_print("In QEMU, press Ctrl+a and x to exit\n");
-	uart_print("********************************************************\n");
+	printk!("\n********************************************************\n");
+	printk!("Hello over there!\n");
+	printk!("In QEMU, press Ctrl+a and x to exit\n");
+	printk!("********************************************************\n");
 
 	loop {}
 }
