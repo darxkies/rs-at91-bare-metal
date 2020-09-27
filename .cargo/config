@@ -1,0 +1,11 @@
+[build]
+target = "armv5te-unknown-linux-gnueabi"
+
+[target.armv5te-unknown-linux-gnueabi]
+linker = "arm-none-eabi-gcc"
+rustflags = [
+	"-C", "target-cpu=arm926ej-s",
+	"-C", "link-arg=-Tlinker.ld",
+	"-C", "link-arg=-nostartfiles",
+	"-C", "link-arg=-Wl,--no-dynamic-linker",
+]

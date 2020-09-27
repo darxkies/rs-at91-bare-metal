@@ -1,0 +1,22 @@
+[package]
+name = "rs-at91-bare-metal"
+version = "0.1.0"
+authors = ["Darx Kies <darxkies@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rlibc = "1.0"
+
+[build-dependencies]
+cc = "1.0"
+
+[profile.dev]
+codegen-units   = 1
+panic           = "abort"
+
+[profile.release]
+codegen-units   = 1
+incremental     = false
+lto             = true
+opt-level       = 's'
+panic           = "abort"
