@@ -1,5 +1,5 @@
   .section .text.startup
-  .global _reset
+  .global semihosting_call
 
 _reset:
 	BL handler_reset
@@ -16,7 +16,7 @@ handler_reset:
 	sub r0, #4
 	ldr r1, stack_start
 	mov sp, r1
-	bl low_init
+	blx low_init
 	b .
 
 handler_undefined: 
@@ -39,5 +39,10 @@ handler_irq:
 
 handler_fiq: 
 	b .
+
+semihosting_call:
+	push {lr}
+	SVC 0x123456
+	pop {pc}
 
 stack_start: .word __stack_start

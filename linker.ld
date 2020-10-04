@@ -4,7 +4,7 @@ ENTRY(_reset)
 
 SECTIONS
 {
-  . = 0x00010000;
+  . = 0x00000000;
 
   .text :
   {
@@ -28,6 +28,14 @@ SECTIONS
     . = ALIGN(4); 
   } 
 
+  .dynamic : { *(.dynamic) } 
+  .dynsym : { *(.dynsym) } 
+  .dynstr : { *(.dynstr) } 
+  .plt : { *(.plt) } 
+  .got : { *(.got) } 
+  .got.plt : { *(.got.plt) } 
+  .hash : { *(.hash) } 
+
   __edata = .;
 
   .bss : ALIGN(4)
@@ -46,16 +54,10 @@ SECTIONS
     . = ALIGN(4);
   } 
 
-  .dynamic : { *(.dynamic) } 
-  .dynsym : { *(.dynsym) } 
-  .dynstr : { *(.dynstr) } 
-  .plt : { *(.plt) } 
-  .got : { *(.got) } 
-  .got.plt : { *(.got.plt) } 
   .interp : { *(.interp) } 
-  .hash : { *(.hash) } 
 
   . = . + 0x4000;
+    . = ALIGN(4); 
   __stack_start = .;
 
   /DISCARD/ :

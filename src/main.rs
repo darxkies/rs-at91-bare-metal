@@ -1,17 +1,20 @@
 #![no_std]
 #![no_main]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 
-#[allow(unused_imports)]
 use rlibc;
 
-use core::{
-    mem::zeroed,
-    panic::PanicInfo,
-    ptr::{read, write_volatile},
-	fmt::{Write, Result},
-};
+pub mod semihosting;
+pub mod uart;
 
-const UART0: u32 = 0x0101F1000;
+use semihosting::*;
+use uart::*;
+
+use core::mem::zeroed;
+use core::panic::PanicInfo;
+use core::ptr::write_volatile;
+use core::fmt::Write;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -20,27 +23,13 @@ fn panic(_info: &PanicInfo) -> ! {
 	}
 }
 
-struct UART;
-
-impl Write for UART {
-	fn write_str(&mut self, value: &str) -> Result {
-		let address = UART0 as *mut u8;
-
-		for byte in value.as_bytes() {
-			unsafe {
-				write_volatile(address, read(byte));
-			}
-		}
-
-		Ok(())
-	}
-}
-
-static mut UART_INSTANCE: UART = UART{};
-
 macro_rules! printk {
     ($($arg:tt)*) => { 
 		unsafe {
+			#[cfg(feature = "semihosting")]
+			write!(SEMIHOSTING_STDOUT, $($arg)*).expect("failed");
+
+			#[cfg(not(feature = "semihosting"))]
 			write!(UART_INSTANCE, $($arg)*).expect("failed");
 		}
 	};
