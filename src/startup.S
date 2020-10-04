@@ -16,7 +16,7 @@ handler_reset:
 	sub r0, #4
 	ldr r1, stack_start
 	mov sp, r1
-	blx low_init
+	bl low_init
 	b .
 
 handler_undefined: 
@@ -40,9 +40,9 @@ handler_irq:
 handler_fiq: 
 	b .
 
+	.thumb_func
 semihosting_call:
-	push {lr}
-	SVC 0x123456
-	pop {pc}
+	SVC 0xAB
+	bx lr
 
 stack_start: .word __stack_start
