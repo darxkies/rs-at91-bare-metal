@@ -1,0 +1,9 @@
+name: rs-at91-bare-metal
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - vim
+        - make watch-and-compile
+  - shell: 
