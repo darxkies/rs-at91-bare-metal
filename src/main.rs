@@ -7,9 +7,11 @@ use rlibc;
 
 pub mod semihosting;
 pub mod uart;
+pub mod at91_debug_unit;
 
 use semihosting::*;
 use uart::*;
+use at91_debug_unit::*;
 
 use core::mem::zeroed;
 use core::panic::PanicInfo;
@@ -30,7 +32,7 @@ macro_rules! printk {
 			write!(SEMIHOSTING_STDOUT, $($arg)*).expect("failed");
 
 			#[cfg(not(feature = "semihosting"))]
-			write!(UART_INSTANCE, $($arg)*).expect("failed");
+			write!(AT91_DEBUG_UNIT, $($arg)*).expect("failed");
 		}
 	};
 }
@@ -52,6 +54,10 @@ pub fn low_init(_start: u32) -> ! {
             sbss = sbss.offset(1);
         }
     }
+
+	unsafe {
+		AT91_DEBUG_UNIT.initialize(0x48);
+	}
 
 	printk!("\nPC: {:#X}\n", _start);
 

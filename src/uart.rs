@@ -1,4 +1,5 @@
-use	core::fmt::{Write, Result};
+use	core::fmt::Write;
+use	core::fmt::Result;
 use core::ptr::write_volatile;
 use core::ptr::read;
 
